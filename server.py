@@ -62,6 +62,7 @@ def sessions_management():
       time.sleep(5)
       if(curr_count >= max_count):
         death = True
+      curr_count = 0
 
 
 def start_server(handler_class=Server, port=4298):

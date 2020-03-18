@@ -11,12 +11,8 @@ CONFIG.read('controller.ini')
 OS_DB = {}
 SV_DB = {}
 IP_DB = {}
-IP_CACHE = []
-
-
-# TODO fix up IP_CACHE, needs to be map of IP:OS
-
-
+# ip->port->data[times tried, curr_speed]
+IP_OS_CACHE = {}
 
 with open(CONFIG['DEFAULT']['OSStore']) as json_file:
     OS_DB = json.load(json_file)
@@ -44,13 +40,18 @@ def terminate():
 
 def get_IPs():
 	global CONFIG
+	ip_addresses = {}
 	ouput_file = CONFIG['DEFAULT']['OutputDir'] + "/ip_addrs"
 
-	os.system("nmap -n -sn 10.0.0.0/24 -oG - | awk '/Up$/{print $2}' >" + 
+	os.system("nmap -n -sn 10.0.0.0/24 -oG - | cut -f1,4 >" + 
 		ouput_file)
 	ip_lines = open(ouput_file, "r")
-	ip_addresses = ip_lines.readlines()
+	ip_lines = ip_lines.readlines()
 	os.remove(ouput_file)
+	for line in ip_lines:
+		ip_slug = line.split(" ")[1]
+		os_slug = line.split("\t")[1]
+		ip_addresses[ip_slug] = os_slug
 	return ip_addresses
 
 def cache_IPs():
@@ -58,8 +59,31 @@ def cache_IPs():
 	IP_CACHE = get_IPs()
 
 
-def perform_scan():
-	pass
+def nmap_scan(ip, port, speed):
+	# TODO: Need logic for scanning, parsing, etc
+	#nmap --vuln -p port -Tspeed ip
+	return True
+
+def perform_scan(ip, port, speed, speedup_attempt=False):
+	successful = nmap_scan(ip, port, speed)
+
+	# Seed data if missing
+	if(IP_DB.get(ip, NULL) == NULL):
+		IP_DB[ip] = {}
+	if(IP_DB[ip].get(port, NULL) == NULL):
+		IP_DB[ip][port] = {
+			'times' = 0
+			'speed' = speed
+		}
+
+	# Perform metric changes
+	if(not successful && speedup_attempt):
+		IP_DB[ip][port]['times'] = -1
+	elif(not successful && not speedup_attempt):
+		IP_DB[ip][port]['times'] = 0
+		IP_DB[ip][port]['speed'] = speed - 1
+	elif(successful && speedup_attempt):
+		IP_DB[ip][port]['times'] = IP_DB[ip][port]['times'] + 1
 
 
 def smart_scan():
@@ -74,17 +98,31 @@ def smart_scan():
 		todo = IP_CACHE
 
 	for ip, os_print in todo.items():
-		# get ports for this IP
+		# TODO: get ports for this IP
 		port_service = {}
+
 		for port, service in port_service.items():
-			if(IP_DB.get(ip, {}).get(port) != NULL):
+			if((data = IP_DB.get(ip, {}).get(port)) != NULL):
 				# Found previous ip:port
-			elif(SV_DB.get(service) != NULL):
+				speed = data['speed']
+				if(data['times'] == CONFIG['Speedup']['Attempts']):
+					IP_DB[ip][port]['speed'] = speed + 1
+					perform_scan(ip, port, speed + 1)
+				elif(data['times'] >= 0):
+					perform_scan(ip, port, speed + 1, True)
+				else
+					perform_scan(ip, port, speed)
+
+				perform_scan(ip, port, speed)
+			elif((speed = SV_DB.get(service)) != NULL):
 				# Found service fingerprint
-			elif(OS_DB.get(os_print) != NULL):
+				perform_scan(ip, port, speed)
+			elif((speed = OS_DB.get(os_print)) != NULL):
 				# Found OS fingerprint
+				perform_scan(ip, port, speed)
 			else:
 				# use default CONFIG['DEFAULT']['InitialNmapLevel']
+				perform_scan(ip, port, CONFIG['DEFAULT']['InitialNmapLevel'])
 
 
 def sig_int_handler(signal_received, frame):
