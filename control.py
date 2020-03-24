@@ -4,6 +4,7 @@ import json
 import nmap
 from signal import signal, SIGINT
 from sys import exit
+from os import system
 
 CONFIG = configparser.ConfigParser()
 CONFIG.read('controller.ini')
@@ -61,7 +62,9 @@ def cache_IPs():
 
 def nmap_scan(ip, port, speed):
 	# TODO: Need logic for scanning, parsing, etc
-	#nmap --vuln -p port -Tspeed ip
+	os.system('nmap --vuln -p port -Tspeed ip -oX output.xml')
+    os.system('python nmap_parser.py output.xml')
+
 	return True
 
 def perform_scan(ip, port, speed, speedup_attempt=False):
