@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE nmaprun>
+<?xml-stylesheet href="file:///usr/local/bin/../share/nmap/nmap.xsl" type="text/xsl"?>
+<!-- Nmap 7.80 scan initiated Wed Feb 19 13:46:43 2020 as: nmap -oA Desktop/output/output -sC -&#45;script vuln -sV -T5 -p1-1000 10.10.10.171 -->
+<nmaprun scanner="nmap" args="nmap -oA Desktop/output/output -sC -&#45;script vuln -sV -T5 -p1-1000 10.10.10.171" start="1582138003" startstr="Wed Feb 19 13:46:43 2020" version="7.80" xmloutputversion="1.04">
+<scaninfo type="connect" protocol="tcp" numservices="1000" services="1-1000"/>
+<verbose level="0"/>
+<debugging level="0"/>
+<prescript><script id="broadcast-avahi-dos" output="&#xa;  Discovered hosts:&#xa;    224.0.0.251&#xa;  After NULL UDP avahi packet DoS (CVE-2011-1002).&#xa;  Hosts are all up (not vulnerable).&#xa;"/></prescript><host starttime="1582138038" endtime="1582138086"><status state="up" reason="conn-refused" reason_ttl="0"/>
+<address addr="10.10.10.171" addrtype="ipv4"/>
+<hostnames>
+</hostnames>
+<ports><extraports state="closed" count="948">
+<extrareasons reason="conn-refused" count="948"/>
+</extraports>
+<extraports state="filtered" count="50">
+<extrareasons reason="no-responses" count="50"/>
+</extraports>
+<port protocol="tcp" portid="22"><state state="open" reason="syn-ack" reason_ttl="0"/><service name="ssh" product="OpenSSH" version="7.6p1 Ubuntu 4ubuntu0.3" extrainfo="Ubuntu Linux; protocol 2.0" ostype="Linux" method="probed" conf="10"><cpe>cpe:/a:openbsd:openssh:7.6p1</cpe><cpe>cpe:/o:linux:linux_kernel</cpe></service><script id="clamav-exec" output="ERROR: Script execution failed (use -d to debug)"/></port>
+<port protocol="tcp" portid="80"><state state="open" reason="syn-ack" reason_ttl="0"/><service name="http" product="Apache httpd" version="2.4.29" extrainfo="(Ubuntu)" method="probed" conf="10"><cpe>cpe:/a:apache:http_server:2.4.29</cpe></service><script id="clamav-exec" output="ERROR: Script execution failed (use -d to debug)"/><script id="http-csrf" output="Couldn&apos;t find any CSRF vulnerabilities."/><script id="http-dombased-xss" output="Couldn&apos;t find any DOM based XSS."/><script id="http-server-header" output="Apache/2.4.29 (Ubuntu)"><elem>Apache/2.4.29 (Ubuntu)</elem>
+</script><script id="http-stored-xss" output="Couldn&apos;t find any stored XSS vulnerabilities."/><script id="vulners" output="&#xa;  cpe:/a:apache:http_server:2.4.29: &#xa;    &#x9;CVE-2019-0211&#x9;7.2&#x9;https://vulners.com/cve/CVE-2019-0211&#xa;    &#x9;CVE-2018-1312&#x9;6.8&#x9;https://vulners.com/cve/CVE-2018-1312&#xa;    &#x9;CVE-2017-15715&#x9;6.8&#x9;https://vulners.com/cve/CVE-2017-15715&#xa;    &#x9;CVE-2019-10082&#x9;6.4&#x9;https://vulners.com/cve/CVE-2019-10082&#xa;    &#x9;CVE-2019-0217&#x9;6.0&#x9;https://vulners.com/cve/CVE-2019-0217&#xa;    &#x9;CVE-2019-10098&#x9;5.8&#x9;https://vulners.com/cve/CVE-2019-10098&#xa;    &#x9;CVE-2019-10081&#x9;5.0&#x9;https://vulners.com/cve/CVE-2019-10081&#xa;    &#x9;CVE-2019-0220&#x9;5.0&#x9;https://vulners.com/cve/CVE-2019-0220&#xa;    &#x9;CVE-2019-0196&#x9;5.0&#x9;https://vulners.com/cve/CVE-2019-0196&#xa;    &#x9;CVE-2018-17199&#x9;5.0&#x9;https://vulners.com/cve/CVE-2018-17199&#xa;    &#x9;CVE-2018-1333&#x9;5.0&#x9;https://vulners.com/cve/CVE-2018-1333&#xa;    &#x9;CVE-2017-15710&#x9;5.0&#x9;https://vulners.com/cve/CVE-2017-15710&#xa;    &#x9;CVE-2019-0197&#x9;4.9&#x9;https://vulners.com/cve/CVE-2019-0197&#xa;    &#x9;CVE-2019-10092&#x9;4.3&#x9;https://vulners.com/cve/CVE-2019-10092&#xa;    &#x9;CVE-2018-11763&#x9;4.3&#x9;https://vulners.com/cve/CVE-2018-11763&#xa;    &#x9;CVE-2018-1283&#x9;3.5&#x9;https://vulners.com/cve/CVE-2018-1283"><table key="cpe:/a:apache:http_server:2.4.29">
+<table>
+<elem key="type">cve</elem>
+<elem key="cvss">7.2</elem>
+<elem key="is_exploit">false</elem>
+<elem key="id">CVE-2019-0211</elem>
+</table>
+<table>
+<elem key="type">cve</elem>
+<elem key="cvss">6.8</elem>
+<elem key="is_exploit">false</elem>
+<elem key="id">CVE-2018-1312</elem>
+</table>
+<table>
+<elem key="type">cve</elem>
+<elem key="cvss">6.8</elem>
+<elem key="is_exploit">false</elem>
+<elem key="id">CVE-2017-15715</elem>
+</table>
+<table>
+<elem key="type">cve</elem>
+<elem key="cvss">6.4</elem>
+<elem key="is_exploit">false</elem>
+<elem key="id">CVE-2019-10082</elem>
+</table>
+<table>
+<elem key="type">cve</elem>
+<elem key="cvss">6.0</elem>
+<elem key="is_exploit">false</elem>
+<elem key="id">CVE-2019-0217</elem>
+</table>
+<table>
+<elem key="type">cve</elem>
+<elem key="cvss">5.8</elem>
+<elem key="is_exploit">false</elem>
+<elem key="id">CVE-2019-10098</elem>
+</table>
+<table>
+<elem key="type">cve</elem>
+<elem key="cvss">5.0</elem>
+<elem key="is_exploit">false</elem>
+<elem key="id">CVE-2019-10081</elem>
+</table>
+<table>
+<elem key="type">cve</elem>
+<elem key="cvss">5.0</elem>
+<elem key="is_exploit">false</elem>
+<elem key="id">CVE-2019-0220</elem>
+</table>
+<table>
+<elem key="type">cve</elem>
+<elem key="cvss">5.0</elem>
+<elem key="is_exploit">false</elem>
+<elem key="id">CVE-2019-0196</elem>
+</table>
+<table>
+<elem key="type">cve</elem>
+<elem key="cvss">5.0</elem>
+<elem key="is_exploit">false</elem>
+<elem key="id">CVE-2018-17199</elem>
+</table>
+<table>
+<elem key="type">cve</elem>
+<elem key="cvss">5.0</elem>
+<elem key="is_exploit">false</elem>
+<elem key="id">CVE-2018-1333</elem>
+</table>
+<table>
+<elem key="type">cve</elem>
+<elem key="cvss">5.0</elem>
+<elem key="is_exploit">false</elem>
+<elem key="id">CVE-2017-15710</elem>
+</table>
+<table>
+<elem key="type">cve</elem>
+<elem key="cvss">4.9</elem>
+<elem key="is_exploit">false</elem>
+<elem key="id">CVE-2019-0197</elem>
+</table>
+<table>
+<elem key="type">cve</elem>
+<elem key="cvss">4.3</elem>
+<elem key="is_exploit">false</elem>
+<elem key="id">CVE-2019-10092</elem>
+</table>
+<table>
+<elem key="type">cve</elem>
+<elem key="cvss">4.3</elem>
+<elem key="is_exploit">false</elem>
+<elem key="id">CVE-2018-11763</elem>
+</table>
+<table>
+<elem key="type">cve</elem>
+<elem key="cvss">3.5</elem>
+<elem key="is_exploit">false</elem>
+<elem key="id">CVE-2018-1283</elem>
+</table>
+</table>
+</script></port>
+</ports>
+<times srtt="118675" rttvar="7902" to="150283"/>
+</host>
+<runstats><finished time="1582138086" timestr="Wed Feb 19 13:48:06 2020" elapsed="83.30" summary="Nmap done at Wed Feb 19 13:48:06 2020; 1 IP address (1 host up) scanned in 83.30 seconds" exit="success"/><hosts up="1" down="0" total="1"/>
+</runstats>
+</nmaprun>

@@ -1,0 +1,8 @@
+general:
+    state_path: state.db
+    name: test_configuration
+    daemon: true
+    sleep: 900
+
+sources:
+  - name: nmap_script_vuln
