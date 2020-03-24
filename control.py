@@ -43,7 +43,7 @@ def get_IPs():
 	ip_addresses = {}
 	ouput_file = CONFIG['DEFAULT']['OutputDir'] + "/ip_addrs"
 
-	os.system("nmap -n -sn 10.0.0.0/24 -oG - | cut -f1,4 >" + 
+	os.system("nmap -n -p1-10000 -O 10.0.0.0/24 -oG - | cut -f1,4 >" + 
 		ouput_file)
 	ip_lines = open(ouput_file, "r")
 	ip_lines = ip_lines.readlines()
@@ -98,8 +98,22 @@ def smart_scan():
 		todo = IP_CACHE
 
 	for ip, os_print in todo.items():
-		# TODO: get ports for this IP
 		port_service = {}
+
+		ouput_file = CONFIG['DEFAULT']['OutputDir'] + "/ports"
+		os.system("nmap -n -p1-10000 -O 10.0.0.0/24 -oG - | cut -f2 >" + 
+		ouput_file)
+		port_lines = open(ouput_file, "r")
+		port_lines = port_lines.readlines()
+		os.remove(ouput_file)
+		
+		for line in port_lines:
+			if("Ports:" in line):
+				part = a.split("Ports: ")[1]
+				port_infos = b.split(",")
+				for port_info in port_infos:
+					all_info = port_info.split("/")
+					port_service[all_info[0]] = all_info[6]
 
 		for port, service in port_service.items():
 			if((data = IP_DB.get(ip, {}).get(port)) != NULL):

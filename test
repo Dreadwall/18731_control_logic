@@ -1,0 +1,5 @@
+Host: 10.0.0.1 ()	Status: Up
+Host: 10.0.0.1 ()	Ports: 21/filtered/tcp//ftp///, 53/open/tcp//domain//dnsmasq 2.80/, 80/open/tcp//http//uhttpd 1.0.0 (Netgear R9000 WAP http config)/, 443/open/tcp//ssl|http//uhttpd 1.0.0 (Netgear R9000 WAP http config)/, 631/open/tcp//ipp?///, 3333/open/tcp//pot//Netgear POT-(Get|Set) Demo/, 5555/open/tcp//upnp//MiniUPnP 2.0 (UPnP 1.1)/	Ignored State: closed (9993)
+Host: 10.0.0.3 ()	Status: Up
+Host: 10.0.0.3 ()	Ports: 80/open/tcp//http//HP OfficeJet 6960 printer http config (Serial TH8CE2P0YP)/, 443/open/tcp//ssl|http//HP OfficeJet 6960 printer http config (Serial TH8CE2P0YP)/, 631/open/tcp//http//HP OfficeJet 6960 printer http config (Serial TH8CE2P0YP)/, 3910/open/tcp//soap//gSOAP 2.7/, 3911/open/tcp//soap//gSOAP 2.7/, 5355/open/tcp//llmnr?///, 8080/open/tcp//http//HP OfficeJet 6960 printer http config (Serial TH8CE2P0YP)/, 9100/open/tcp//jetdirect?///, 9220/open/tcp//hp-gsg//HP Generic Scan Gateway 1.0/	Ignored State: closed (9991)
+# Nmap done at Mon Mar 23 11:45:39 2020 -- 4 IP addresses (2 hosts up) scanned in 179.18 seconds
