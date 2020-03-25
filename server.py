@@ -1,4 +1,5 @@
 from BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer
+from Okta_Phishing_Setup import ThreadedHTTPServer
 from SocketServer import ThreadingMixIn
 from threading import Lock, Thread
 from urlparse import urlparse
@@ -40,29 +41,30 @@ class Server(BaseHTTPRequestHandler):
     
   def handle_http(self, status, content_type):
     self.send_response(status)
-    self.send_header(‘Content-type’, content_type)
+    self.send_header('Content-type', content_type)
     self.end_headers()
 
     mutex.acquire()
-    curr_count++
+    curr_count += 1
     mutex.release()
 
-    return bytes(“Hello World”, “UTF-8”)
+    return bytes("Hello World", "UTF-8")
     
   def respond(self):
     if(death):
-      content = self.handle_http(501, ‘text/html’)
+      content = self.handle_http(501, 'text/html')
     else:
-      content = self.handle_http(200, ‘text/html’)
+      content = self.handle_http(200, 'text/html')
     self.wfile.write(content)
 
-
 def sessions_management():
-  while True:
-      time.sleep(5)
-      if(curr_count >= max_count):
-        death = True
-      curr_count = 0
+    global curr_count
+
+    while True:
+        time.sleep(5)
+        if(curr_count >= max_count):
+            death = True
+        curr_count = 0
 
 
 def start_server(handler_class=Server, port=4298):
@@ -77,5 +79,5 @@ def start_server(handler_class=Server, port=4298):
 
 
 if __name__ == '__main__':
-  start_server(port=int(sys.argv[0]))
+  start_server(port=int(sys.argv[1]))
   
