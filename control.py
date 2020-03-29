@@ -15,7 +15,9 @@ OS_DB = {}
 SV_DB = {}
 IP_DB = {}
 # ip->port->data[times tried, curr_speed]
-IP_OS_CACHE = {}
+
+SYSTEM_FINGERPRINTS_DB = []
+# Array of SystemFingerprints
 
 ########## FINGERPRINT LOADER ##########
 
@@ -82,7 +84,7 @@ def get_port_services():
 ########## CLASSIFIERS ##########
 
 
-def get_speed_and_callback():
+def get_speed_and_callback(port, service, ip, os, port_service):
     data = IP_DB.get(ip, {}).get(port)    
 
     # Check if machine has previous data
@@ -93,6 +95,12 @@ def get_speed_and_callback():
             return (speed + 1, increase_speed_callback)
         else:
             return (speed, normal_speed_callback)
+
+
+    # Check if we have a system fingerprint
+    
+
+
 
     # Rely on single service fingerprint
     speed = SV_DB.get(service)
@@ -121,18 +129,9 @@ def smart_scan():
     for ip, os_print in todo.items():
         port_service = get_port_services()
         for port, service in port_service.items():
-            speed = get_speed()
-            perform_scan(ip, port, speed)
+            speed, callback = get_speed_and_callback(port, service, ip, os_print, port_service)
+            perform_scan(ip, port, speed, callback)
 
-
-def nmap_scan(ip, port, speed):
-    # TODO: Need true/false if nmap successful
-
-    ouput_file = CONFIG['DEFAULT']['OutputDir'] + "/output.xml"
-
-    os.system('nmap --vuln -p port -Tspeed ip -oX ' + ouput_file)
-    os.system('python nmap_parser.py ' + ouput_file)
-    return True
 
 def perform_scan(ip, port, speed, callback):
     successful = nmap_scan(ip, port, speed)
@@ -148,6 +147,16 @@ def perform_scan(ip, port, speed, callback):
 
     # Perform metric changes
     callback(ip, port, speed, successful)
+
+
+def nmap_scan(ip, port, speed):
+    # TODO: Need true/false if nmap successful
+
+    ouput_file = CONFIG['DEFAULT']['OutputDir'] + "/output.xml"
+
+    os.system('nmap --vuln -p port -Tspeed ip -oX ' + ouput_file)
+    os.system('python nmap_parser.py ' + ouput_file)
+    return True
 
 
 ########## SPEED CALLBACKS ##########
