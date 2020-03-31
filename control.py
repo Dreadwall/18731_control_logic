@@ -73,8 +73,8 @@ def get_port_services():
     
     for line in port_lines:
         if("Ports:" in line):
-            part = a.split("Ports: ")[1]
-            port_infos = b.split(",")
+            part = line.split("Ports: ")[1]
+            port_infos = part.split(",")
             for port_info in port_infos:
                 all_info = port_info.split("/")
                 port_service[all_info[0]] = all_info[6]
@@ -85,34 +85,50 @@ def get_port_services():
 
 
 def get_speed_and_callback(port, service, ip, os, port_service):
-    data = IP_DB.get(ip, {}).get(port)    
+    global IP_DB
+    global SYSTEM_FINGERPRINTS_DB
+    global SV_DB
+    global OS_DB
+
+    data = IP_DB.get(ip, {}).get(port, NULL)    
+    fingerprintID = -1
+
+
+    # Check if we have a system fingerprint
+    sys_fingerprint = gen_fingerprint(port_service, ip, os, -1)
+    for i in range(len(SYSTEM_FINGERPRINTS_DB)):
+        if sys_fingerprint.equal_in_tolerance(SYSTEM_FINGERPRINTS_DB, CONFIG['DEFAULT']['Tolerance']):
+            fingerprintID = i
+            break
+
+    # Save for later editting
+    if(fingerprintID == -1):
+        fingerprintID = len(SYSTEM_FINGERPRINTS_DB)
+        SYSTEM_FINGERPRINTS_DB.append(sys_fingerprint)
+
 
     # Check if machine has previous data
     if(data != NULL):
         # Found previous ip:port
         speed = data['speed']
         if(data['times'] >= 0):
-            return (speed + 1, increase_speed_callback)
+            return (speed + 1, increase_speed_callback, fingerprintID)
         else:
-            return (speed, normal_speed_callback)
-
-
-    # Check if we have a system fingerprint
-    
-
-
+            return (speed, normal_speed_callback, fingerprintID)
 
     # Rely on single service fingerprint
     speed = SV_DB.get(service)
     if(speed != NULL):
         # Found service fingerprint
-        return (speed, normal_speed_callback)
+        return (speed, normal_speed_callback, fingerprintID)
 
     # Rely on OS fingerprint
     speed = OS_DB.get(os_print)
     if(speed != NULL):
         # Found OS fingerprint
-        return (speed, normal_speed_callback)
+        return (speed, normal_speed_callback, fingerprintID)
+
+    return (CONFIG['NMap']['InitialSpeed'], normal_speed_callback, fingerprintID)
 
 
 ########## SCANNER ##########
@@ -129,11 +145,11 @@ def smart_scan():
     for ip, os_print in todo.items():
         port_service = get_port_services()
         for port, service in port_service.items():
-            speed, callback = get_speed_and_callback(port, service, ip, os_print, port_service)
-            perform_scan(ip, port, speed, callback)
+            speed, callback, ID = get_speed_and_callback(port, service, ip, os_print, port_service)
+            perform_scan(ip, port, speed, callback, ID)
 
 
-def perform_scan(ip, port, speed, callback):
+def perform_scan(ip, port, speed, callback, ID):
     successful = nmap_scan(ip, port, speed)
 
     # Seed data if missing
@@ -146,7 +162,7 @@ def perform_scan(ip, port, speed, callback):
         }
 
     # Perform metric changes
-    callback(ip, port, speed, successful)
+    callback(ip, port, speed, successful, ID)
 
 
 def nmap_scan(ip, port, speed):
@@ -161,25 +177,32 @@ def nmap_scan(ip, port, speed):
 
 ########## SPEED CALLBACKS ##########
 
-def increase_speed_callback(ip, port, speed, result):
+def increase_speed_callback(ip, port, speed, result, fingerprintID):
     global IP_DB
+    global SYSTEM_FINGERPRINTS_DB
+
     if(result == True):
         if(data['times'] == CONFIG['Speedup']['Attempts']):
             # We can speed up
-            IP_DB[ip][port]['speed'] = min(speed + 1, CONFIG['NMap']['MaxSpeed'])
+            IP_DB[ip][port]['speed'] = min(speed, CONFIG['NMap']['MaxSpeed'])
             IP_DB[ip][port]['times'] = 0
+            SYSTEM_FINGERPRINTS_DB[fingerprintID].set_speed(port, speed)
         else:
             IP_DB[ip][port]['times'] = IP_DB[ip][port]['times'] + 1
     else:
         IP_DB[ip][port]['times'] = -1
+    
 
-def normal_speed_callback(ip, port, speed, result):
+
+def normal_speed_callback(ip, port, speed, result, fingerprintID):
     global IP_DB
     if(result == False):
         # Scan failed, we need to slow down
         IP_DB[ip][port]['times'] = 0
-        IP_DB[ip][port]['speed'] = max(speed - 1, CONFIG['NMap']['MinSpeed'])        
-
+        IP_DB[ip][port]['speed'] = max(speed - 1, CONFIG['NMap']['MinSpeed'])   
+        SYSTEM_FINGERPRINTS_DB[fingerprintID].set_speed(port, speed - 1)
+    else:
+        SYSTEM_FINGERPRINTS_DB[fingerprintID].set_speed(port, speed) 
 
 
 ########## SIGNAL HANDLER ##########

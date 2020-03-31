@@ -4,10 +4,21 @@ class SystemFingerprint:
 	#port->[service, speed]
 
 	ip_address = ""
+	os = ""
 
-	def __init__(self, pss, ip):
+	def __init__(self, pss, ip, os):
 		self.port_service_speed = pss
 		self.ip_address = ip
+		self.os = os
+
+	def gen_fingerprint(port_service, ip, speed_placeholder, os):
+		port_service_speed = {}
+
+		for port, service in port_service.items():
+			port_service_speed[port] = [service, speed_placeholder]
+
+		return SystemFingerprint(port_service_speed, ip, os)
+
 
 	def equal_in_tolerance(self, sf, tolerance):
 		non_equality = 0
@@ -50,16 +61,30 @@ class SystemFingerprint:
 			# We weight this a little more as its indicative of network admin policies
 			non_equality = non_equality + 3
 
+
+		if(self.get_os() != sf.get_os()):
+			# This is also weighted heavier as boxes running different OS's may be drastically different
+			# from each other. Even a version difference shows that there's not homogeneus boxes
+			# which is what this classifier assumes for good results.
+			non_equality = non_equality + 3
+
 		if(non_equality <= tolerance):
 			return True
 		else:
 			return False
+
+	def get_os(self):
+		return self.os
 
 	def get_ip_address(self):
 		return self.ip_address
 
 	def get_port_service_speed(self):
 		return self.port_service_speed
+
+	def set_speed(self, port, speed):
+		service, _ = self.port_service_speed[port] 
+		self.port_service_speed[port] = [service, speed]
 
 
 
