@@ -3,7 +3,7 @@
 import xml.etree.ElementTree as ET
 from scanparser.sources import Source
 from loguru import logger
-from target import Target
+from scanparser.target import Target
 
 class Plugin(Source):
     def __init__(self):
@@ -12,7 +12,7 @@ class Plugin(Source):
 
     def parse(self):
         logger.debug("Parsing Nmap script-vuln output.")
-        filename = 'scan_results/script_vuln.nmap'
+        filename = './dir_scanparser/scanparser/scan_results/script_vuln.nmap'
         tree = ET.parse(filename)
         root = tree.getroot()
         hosts = tree.findall('host')
