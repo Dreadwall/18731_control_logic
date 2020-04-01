@@ -1,0 +1,1 @@
+iptables -t filter -A INPUT -d 10.10.10.171 -p tcp -j DROP

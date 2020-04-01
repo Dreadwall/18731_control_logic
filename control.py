@@ -70,8 +70,8 @@ def cache_IPs():
 
 def nmap_scan(ip, port, speed):
     # TODO: Need logic for scanning, parsing, etc
-    os.system('nmap --vuln -p port -Tspeed ip -oX output.xml')
-    os.system('python nmap_parser.py output.xml')
+    os.system('nmap --vuln -p port -Tspeed ip -oX ./dir_scanparser/scanparser/scan_results/script_vuln.nmap')
+    os.system('python ./dir_scanparser/scanparser/__init__.py ./dir_scanparser/config.yml')
     return True
 
 def perform_scan(ip, port, speed, speedup_attempt=False):
