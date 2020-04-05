@@ -6,13 +6,14 @@ from loguru import logger
 from scanparser.target import Target
 
 class Plugin(Source):
-    def __init__(self):
-        self.name = 'Nmap script-vuln parser'
+    def __init__(self, name, inputfile):
+        self.name = name
         self.scan_engine = 'nmap'
+        self.filename = inputfile
 
     def parse(self):
         logger.debug("Parsing Nmap script-vuln output.")
-        filename = './dir_scanparser/scanparser/scan_results/script_vuln.nmap'
+        filename = self.filename
         tree = ET.parse(filename)
         root = tree.getroot()
         hosts = tree.findall('host')

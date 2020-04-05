@@ -14,19 +14,27 @@ class Parser:
         self.targets = []
 
     def load_sources(self):
-        self.sources = self.config.load_sources()
+        logger.debug("Loading source plugins...")
+        self.sources = {name: source(**kwargs) 
+                        for name, source, kwargs in self.config.load_sources()}
+
+        logger.debug("Completed loading source plugins.")
 
     def load_rulesets(self):
-        self.rulesets = self.config.load_rulesets()
+        logger.debug("Loading ruleset plugins...")
+        self.rulesets = {name: ruleset(**kwargs) 
+                        for name, ruleset, kwargs in self.config.load_rulesets()}
+
+        logger.debug("Completed loading source plugins.")
 
     def run(self):
         #Run parsers
-        for source in self.sources:
-            targets = source.parse()
+        for name in self.sources:
+            targets = self.sources[name].parse()
             self.targets += targets
 
-        for ruleset in self.rulesets:
-            ruleset.generate(self.targets, 'output.txt')
+        for name in self.rulesets:
+            self.rulesets[name].generate(self.targets)
 
 def main():
     if len(sys.argv) != 2:

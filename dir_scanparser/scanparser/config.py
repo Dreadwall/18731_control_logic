@@ -17,27 +17,53 @@ class Config:
                 logger.error("Unable to load configuration file.")
 
     def load_sources(self):
-        logger.debug("Loading source plugins...")
         modules = []
         for source in self.config['sources']:
+            kwargs = {}
+            #Load kwarg values from configuration settings
+            for key, value in source.items():
+                if key == 'inputfile':
+                    kwargs[key] = self.project_directory() + "/" + value
+
+                else:
+                    kwargs[key] = value
+
             try:
                 logger.debug(f"Loading module {source['name']}")
-                module = importlib.import_module('.'.join([SOURCE, source['name']])).Plugin()
-                modules.append(module)
+                module = importlib.import_module('.'.join([SOURCE, source['name']]))
+                modules.append((source['name'], module.Plugin, kwargs))
+
             except ImportError:
                 logger.error(f"Failed to load module {source['name']}")
                 continue
+
+        logger.debug(f"Successfully loaded {len(modules)} sources.")
         return modules
 
     def load_rulesets(self):
-        logger.debug("Loading ruleset plugins...")
         modules = []
         for ruleset in self.config['rulesets']:
+            kwargs = {}
+            #Load kwarg values from configuration settings
+            for key, value in ruleset.items():
+                if key == 'outputfile':
+                    kwargs[key] = self.project_directory() + "/" + value
+
+                else:
+                    kwargs[key] = value
+
             try:
                 logger.debug(f"Loading module {ruleset['name']}")
-                module = importlib.import_module('.'.join([RULESET, ruleset['name']])).Plugin()
-                modules.append(module)
+                module = importlib.import_module('.'.join([RULESET, ruleset['name']]))
+                modules.append((ruleset['name'], module.Plugin, kwargs))
+
             except ImportError:
                 logger.error(f"Failed to load module {ruleset['name']}")
                 continue
+
+        logger.debug(f"Successfully loaded {len(modules)} rulesets.")
         return modules
+
+    def project_directory(self):
+        return self.config['general']['proj_dir']
+

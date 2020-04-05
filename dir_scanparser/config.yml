@@ -1,11 +1,10 @@
 general:
-    state_path: state.db
-    name: test_configuration
-    daemon: true
-    sleep: 900
+    proj_dir: /home/magicannon/18731_control_logic
 
 sources:
   - name: nmap_script_vuln
+    inputfile: nmap_script_vuln.xml
 
 rulesets:
   - name: iptables
+    outputfile: iptables.out

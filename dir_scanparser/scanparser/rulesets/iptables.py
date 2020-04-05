@@ -3,10 +3,11 @@
 from scanparser.rulesets import Ruleset
 
 class Plugin(Ruleset):
-    def __init__(self):
-        pass
+    def __init__(self, **kwargs):
+        self.name = kwargs['name']
+        self.filename = kwargs['outputfile']
 
-    def generate(self, targets, filename):
+    def generate(self, targets):
         rules = []
         for target in targets:
             try:
@@ -15,7 +16,7 @@ class Plugin(Ruleset):
                 continue
             rules.append(rule)
 
-        self.write_iptables_rule(filename, rules)
+        self.write_iptables_rule(self.filename, rules)
 
     def create_iptables_rule(self, target):
         rule = 'iptables -t filter -A INPUT'

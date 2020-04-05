@@ -3,7 +3,7 @@
 from scanparser.target import Target
 
 class Source:
-    def __init__(self):
+    def __init__(self, **kwargs):
         self.name = None
         self.scan_engine = None
 
