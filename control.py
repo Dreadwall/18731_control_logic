@@ -1,12 +1,15 @@
 import schedule
 import configparser
 import json
-import nmap
 import math
 import time
 from signal import signal, SIGINT
 from sys import exit
 from os import system
+from IPy import IP
+import http.server
+from demand_server import MyHandler 
+import _thread
 
 CONFIG = configparser.ConfigParser()
 CONFIG.read('controller.ini')
@@ -18,6 +21,7 @@ IP_DB = {}
 
 SYSTEM_FINGERPRINTS_DB = []
 # Array of SystemFingerprints
+
 
 ########## FINGERPRINT LOADER ##########
 
@@ -142,6 +146,10 @@ def smart_scan():
     else:
         todo = IP_CACHE
 
+    smart_scan_curried(todo)
+
+
+def smart_scan_curried(todo):
     for ip, os_print in todo.items():
         port_service = get_port_services()
         for port, service in port_service.items():
@@ -205,6 +213,11 @@ def normal_speed_callback(ip, port, speed, result, fingerprintID):
         SYSTEM_FINGERPRINTS_DB[fingerprintID].set_speed(port, speed) 
 
 
+########## DEMAND CALLBACK ##########
+def on_demand_scan(ip):
+    smart_scan_curried([ip])
+
+
 ########## SIGNAL HANDLER ##########
 
 def terminate():
@@ -242,10 +255,18 @@ if(CONFIG['Cache']['CacheUnit'] == 'hour'):
 else:
     schedule.every(interval).days.do(smart_scan)
 
-
-
 # setup terminate
 signal(SIGINT, sig_int_handler)
+
+try:
+    MyHandler.set_demand_callback(on_demand_scan)
+    server_class = http.server.HTTPServer
+    httpd = server_class((HOST_NAME, PORT_NUMBER), MyHandler)
+
+    _thread.start_new_thread( httpd.serve_forever )
+except:
+    print ("Error: unable to start thread")
+
 
 while True:
     schedule.run_pending()
