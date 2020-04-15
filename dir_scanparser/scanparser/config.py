@@ -66,4 +66,3 @@ class Config:
 
     def project_directory(self):
         return self.config['general']['proj_dir']
-

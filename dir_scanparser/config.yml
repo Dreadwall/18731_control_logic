@@ -2,9 +2,16 @@ general:
     proj_dir: /home/magicannon/18731_control_logic
 
 sources:
-  - name: nmap_script_vuln
-    inputfile: nmap_script_vuln.xml
+#  - name: nmap_script_vuln
+#    inputfile: nmap_script_vuln.xml
+
+  - name: test_source
+    inputfile: test_source_input.txt
 
 rulesets:
-  - name: iptables
-    outputfile: iptables.out
+#  - name: iptables
+#    outputfile: iptables.out
+
+  - name: snort_codecat007
+    outputfile: snort_codecat.out
+    rootdirectory: /home/magicannon/snort-rules

@@ -50,10 +50,7 @@ class Plugin(Source):
                             target.set_dst_port(portnum)
                             target.set_proto(proto)
                             targets.append(target)
-                            logger.debug(f"Target found: \
-                                Dst IP: {destip},\t\
-                                Dst port: {portnum},\t\
-                                Protocol: {proto}")
+                            logger.debug(f"Target found | Dst IP: {destip} | Dst port: {portnum} | Protocol: {proto}")
 
         return targets
 

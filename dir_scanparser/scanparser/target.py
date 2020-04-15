@@ -10,6 +10,7 @@ class Target:
         self.service    = None
         self.regex      = None
         self.sig        = None
+        self.cve        = None
 
     def set_src_ip(self, src_ip):
         self.src_ip = src_ip
@@ -34,3 +35,6 @@ class Target:
 
     def set_sig(self, sig):
         self.sig = sig
+
+    def set_cve(self, cve_id):
+        self.cve = cve_id
