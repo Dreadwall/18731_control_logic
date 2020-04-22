@@ -1,8 +1,10 @@
 #!/usr/bin/env python
 
-import xml.etree.ElementTree as ET
-from scanparser.sources import Source
+import collections
+import xmltodict
+import json
 from loguru import logger
+from scanparser.sources import Source
 from scanparser.target import Target
 
 class Plugin(Source):
@@ -12,55 +14,57 @@ class Plugin(Source):
         self.filename = inputfile
 
     def parse(self):
-        logger.debug("Parsing Nmap script-vuln output.")
-        filename = self.filename
-        tree = ET.parse(filename)
-        root = tree.getroot()
-        hosts = tree.findall('host')
-
         targets = []
 
-        for host in hosts:
-            ipaddr_t = host.find('address')
-            try:
-                destip = ipaddr_t.get('addr')
-            except:
-                continue
-    
-            try:
-                ports = host.find('ports').findall('port')
-            except:
-                continue
-    
-            #Parse each port
-            for port in ports:
-                portnum = port.get('portid')
-                proto = port.get('protocol')
-                service = port.find('service').get('name')
-                logger.debug(portnum + '|' + proto + '|' + service)
-    
-                #Parse results of each script run on port
-                scripts = port.findall('script')
-                for script in scripts:
-                    logger.debug('\t' + script.get('id'))
-                    if script.get('id') == 'vulners':
-                        if self.handle_vulners(script) != True:
-                            target = Target()
-                            target.set_dst_ip(destip)
-                            target.set_dst_port(portnum)
-                            target.set_proto(proto)
+        logger.debug("Parsing Nmap script-vuln output.")
+        with open(self.filename) as fp:
+            scan = xmltodict.parse(fp.read())['nmaprun']
+            ipaddr = scan['host']['address']['@addr']
+            ports = scan['host']['ports']['port']
+            if isinstance(ports, collections.Mapping):
+                portnum = ports['@portid']
+                service = ports['service']['@name']
+                scripts = ports['script']
+                if isinstance(scripts, collections.Mapping):
+                    target = self.handle_script(scripts, ipaddr, portnum, service)
+                    if target is not None:
+                        targets.append(target)
+ 
+                if type(scripts) == list:
+                    for script in scripts:
+                        target = self.handle_script(script, ipaddr, portnum, service)
+                        if target is not None:
                             targets.append(target)
-                            logger.debug(f"Target found | Dst IP: {destip} | Dst port: {portnum} | Protocol: {proto}")
 
+            if type(ports) == list:
+                for port in ports:
+                    portnum = port['@portid']
+                    service = port['service']['@name']
+                    scripts = port['script']
+                    if isinstance(scripts, collections.Mapping):
+                        target = self.handle_script(scripts, ipaddr, portnum, service)
+                        if target is not None:
+                            targets.append(target)
+    
+                    if type(scripts) == list:
+                        for script in scripts:
+                            target = self.handle_script(script, ipaddr, portnum, service)
+                            if target is not None:
+                                targets.append(target)
+    
         return targets
 
-    def handle_vulners(self, script):
-        try:
-            tables = script.find('table').findall('table')
-        except:
-            return False
-    
-        for table in tables:
-            elems = table.findall('elem')
-            if elems[2].text == 'true':
-                return True
+    def handle_script(self, script, ipaddr, portnum, service):
+        if script['@id'] == 'http-slowloris-check':
+            logger.debug(f"Found Slow Loris entry")
+            if 'VULNERABLE' in script['@output']:
+                cve = script['table']['@key']
+                logger.debug(f"Found Slow Loris vuln: {cve}")
+                target = Target()
+                target.set_dst_ip(ipaddr)
+                target.set_dst_port(portnum)
+                target.set_proto(service)
+                target.set_cve(cve)
+                logger.debug(f"Target found | Dst IP: {ipaddr} | Dst port: {portnum} | Protocol: {service}")
+                return target
+        return None

@@ -1,0 +1,1 @@
+iptables -t filter -A INPUT -d 127.0.0.1 -p http -j DROP
