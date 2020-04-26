@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE nmaprun>
 <?xml-stylesheet href="file:///usr/bin/../share/nmap/nmap.xsl" type="text/xsl"?>
-<!-- Nmap 7.60 scan initiated Wed Apr 22 03:26:57 2020 as: nmap -&#45;script vuln -p 80 -T 3 -oX ./dir_scanparser/scanparser/scan_results/script_vuln.nmap 127.0.0.1 -->
-<nmaprun scanner="nmap" args="nmap -&#45;script vuln -p 80 -T 3 -oX ./dir_scanparser/scanparser/scan_results/script_vuln.nmap 127.0.0.1" start="1587540417" startstr="Wed Apr 22 03:26:57 2020" version="7.60" xmloutputversion="1.04">
+<!-- Nmap 7.60 scan initiated Sun Apr 26 00:55:58 2020 as: nmap -&#45;script vuln -p 80 -T 3 -oX ./dir_scanparser/scanparser/scan_results/script_vuln.nmap 127.0.0.1 -->
+<nmaprun scanner="nmap" args="nmap -&#45;script vuln -p 80 -T 3 -oX ./dir_scanparser/scanparser/scan_results/script_vuln.nmap 127.0.0.1" start="1587876958" startstr="Sun Apr 26 00:55:58 2020" version="7.60" xmloutputversion="1.04">
 <scaninfo type="syn" protocol="tcp" numservices="1" services="80"/>
 <verbose level="0"/>
 <debugging level="0"/>
-<prescript><script id="broadcast-avahi-dos" output="&#xa;  Discovered hosts:&#xa;    224.0.0.251&#xa;  After NULL UDP avahi packet DoS (CVE-2011-1002).&#xa;  Hosts are all up (not vulnerable).&#xa;"/></prescript><host starttime="1587540451" endtime="1587540963"><status state="up" reason="localhost-response" reason_ttl="0"/>
+<host starttime="1587876968" endtime="1587877479"><status state="up" reason="localhost-response" reason_ttl="0"/>
 <address addr="127.0.0.1" addrtype="ipv4"/>
 <hostnames>
 <hostname name="localhost" type="PTR"/>
@@ -22,9 +22,9 @@
 </table>
 <table key="dates">
 <table key="disclosure">
+<elem key="day">17</elem>
 <elem key="year">2009</elem>
 <elem key="month">09</elem>
-<elem key="day">17</elem>
 </table>
 </table>
 <elem key="disclosure">2009-09-17</elem>
@@ -37,8 +37,8 @@
 </table>
 </script><script id="http-stored-xss" output="Couldn&apos;t find any stored XSS vulnerabilities."/></port>
 </ports>
-<times srtt="52" rttvar="5000" to="100000"/>
+<times srtt="56" rttvar="5000" to="100000"/>
 </host>
-<runstats><finished time="1587540963" timestr="Wed Apr 22 03:36:03 2020" elapsed="545.90" summary="Nmap done at Wed Apr 22 03:36:03 2020; 1 IP address (1 host up) scanned in 545.90 seconds" exit="success"/><hosts up="1" down="0" total="1"/>
+<runstats><finished time="1587877479" timestr="Sun Apr 26 01:04:39 2020" elapsed="521.81" summary="Nmap done at Sun Apr 26 01:04:39 2020; 1 IP address (1 host up) scanned in 521.81 seconds" exit="success"/><hosts up="1" down="0" total="1"/>
 </runstats>
 </nmaprun>

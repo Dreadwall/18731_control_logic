@@ -1,5 +1,4 @@
 from BaseHTTPServer import BaseHTTPRequestHandler, HTTPServer
-from Okta_Phishing_Setup import ThreadedHTTPServer
 from SocketServer import ThreadingMixIn
 from threading import Lock, Thread
 from urlparse import urlparse
@@ -28,6 +27,10 @@ death = False
 curr_count = 0
 max_count = 5
 mutex = Lock()
+
+class ThreadedHTTPServer(ThreadingMixIn, HTTPServer):
+        """Handle requests in a separate thread."""
+
 
 class Server(BaseHTTPRequestHandler):
   def do_HEAD(self):

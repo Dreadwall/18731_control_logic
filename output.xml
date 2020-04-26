@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE nmaprun>
+<?xml-stylesheet href="file:///usr/bin/../share/nmap/nmap.xsl" type="text/xsl"?>
+<!-- Nmap 7.60 scan initiated Sun Apr 26 00:17:45 2020 as: nmap -&#45;script vuln -p 22,80 -T 3 -oX ./output.xml 127.0.0.1 -->
+<nmaprun scanner="nmap" args="nmap -&#45;script vuln -p 22,80 -T 3 -oX ./output.xml 127.0.0.1" start="1587874665" startstr="Sun Apr 26 00:17:45 2020" version="7.60" xmloutputversion="1.04">
+<scaninfo type="connect" protocol="tcp" numservices="2" services="22,80"/>

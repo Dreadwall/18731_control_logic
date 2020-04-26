@@ -1,5 +1,5 @@
 general:
-    proj_dir: /home/magicannon/18731_control_logic
+    proj_dir: /home/ryoma/Desktop/18731-demo/18731_control_logic
 
 sources:
   - name: nmap_script_vuln
@@ -12,7 +12,7 @@ sources:
 rulesets:
   - name: iptables
     outputfile: dir_scanparser/scanparser/ruleset_results/iptables.out
-    rootdirectory: /home/magicannon/iptable-rules
+    rootdirectory: /home/ryoma/Desktop/18731-demo/18731_control_logic/iptable-rules
 
 #  - name: snort_codecat007
 #    outputfile: snort_codecat.out
