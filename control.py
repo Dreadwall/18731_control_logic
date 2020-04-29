@@ -10,6 +10,7 @@ from IPy import IP
 import http.server
 from demand_server import MyHandler 
 import _thread
+import subprocess
 
 CONFIG = configparser.ConfigParser()
 CONFIG.read('controller.ini')
@@ -178,7 +179,11 @@ def nmap_scan(ip, port, speed):
 
     ouput_file = CONFIG['DEFAULT']['OutputDir'] + "/output.xml"
 
-    os.system('nmap --vuln -p port -Tspeed ip -oX ' + ouput_file)
+    output = subprocess.check_output('nmap --vuln -p port -Tspeed ip -oX ' + ouput_file, shell=True)
+
+    if(output.contains("ERROR") or output.contains("closed")):
+        return False
+
     os.system('python nmap_parser.py ' + ouput_file)
     return True
 
