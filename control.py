@@ -12,6 +12,7 @@ import http.server
 from demand_server import MyHandler 
 import _thread
 import subprocess
+from SystemFingerprint import *
 
 CONFIG = configparser.ConfigParser()
 CONFIG.read('controller.ini')

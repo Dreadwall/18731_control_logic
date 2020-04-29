@@ -1,4 +1,12 @@
 
+def gen_fingerprint(port_service, ip, speed_placeholder, os):
+	port_service_speed = {}
+
+	for port, service in port_service.items():
+		port_service_speed[port] = [service, speed_placeholder]
+
+	return SystemFingerprint(port_service_speed, ip, os)
+
 class SystemFingerprint:
 	port_service_speed = {}
 	#port->[service, speed]
@@ -10,15 +18,6 @@ class SystemFingerprint:
 		self.port_service_speed = pss
 		self.ip_address = ip
 		self.os = os
-
-	def gen_fingerprint(port_service, ip, speed_placeholder, os):
-		port_service_speed = {}
-
-		for port, service in port_service.items():
-			port_service_speed[port] = [service, speed_placeholder]
-
-		return SystemFingerprint(port_service_speed, ip, os)
-
 
 	def equal_in_tolerance(self, sf, tolerance):
 		non_equality = 0
