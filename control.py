@@ -222,11 +222,15 @@ def increase_speed_callback(ip, port, speed, result, fingerprintID):
 
 def normal_speed_callback(ip, port, speed, result, fingerprintID):
     global IP_DB
+
+    speed = int(speed)
+    max_speed = max(speed - 1, int(CONFIG['NMap']['MinSpeed']))
+
     if(result == False):
         # Scan failed, we need to slow down
         IP_DB[ip][port]['times'] = 0
-        IP_DB[ip][port]['speed'] = max(speed - 1, CONFIG['NMap']['MinSpeed'])   
-        SYSTEM_FINGERPRINTS_DB[fingerprintID].set_speed(port, speed - 1)
+        IP_DB[ip][port]['speed'] = max_speed
+        SYSTEM_FINGERPRINTS_DB[fingerprintID].set_speed(port, max_speed)
     else:
         SYSTEM_FINGERPRINTS_DB[fingerprintID].set_speed(port, speed) 
 
