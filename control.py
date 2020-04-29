@@ -129,13 +129,13 @@ def get_speed_and_callback(port, service, ip, os, port_service):
             return (speed, normal_speed_callback, fingerprintID)
 
     # Rely on single service fingerprint
-    speed = SV_DB.get(service)
+    speed = SV_DB.get(service, None)
     if(speed != None):
         # Found service fingerprint
         return (speed, normal_speed_callback, fingerprintID)
 
     # Rely on OS fingerprint
-    speed = OS_DB.get(os_print)
+    speed = OS_DB.get(os, None)
     if(speed != None):
         # Found OS fingerprint
         return (speed, normal_speed_callback, fingerprintID)
