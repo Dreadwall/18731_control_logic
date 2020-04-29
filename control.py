@@ -225,6 +225,7 @@ def increase_speed_callback(ip, port, speed, result, fingerprintID):
 
 def normal_speed_callback(ip, port, speed, result, fingerprintID):
     global IP_DB
+    global SYSTEM_FINGERPRINTS_DB
 
     speed = int(speed)
     max_speed = max(speed - 1, int(CONFIG['NMap']['MinSpeed']))
