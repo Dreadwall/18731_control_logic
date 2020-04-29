@@ -70,11 +70,11 @@ def cache_IPs():
     IP_CACHE = get_IPs()
 
 
-def get_port_services():
+def get_port_services(ip):
     port_service = {}
 
     ouput_file = CONFIG['DEFAULT']['OutputDir'] + "/ports"
-    os.system("nmap -n -p1-10000 -O " + CONFIG['DEFAULT']['Subnet'] + " -oG - | cut -f2 >" + 
+    os.system("nmap -n -p1-10000 -O " + ip + " -oG - | cut -f2 >" + 
     ouput_file)
     port_lines = open(ouput_file, "r")
     port_lines = port_lines.readlines()
@@ -82,6 +82,8 @@ def get_port_services():
     
     for line in port_lines:
         if("Ports:" in line):
+            print(line)
+
             part = line.split("Ports: ")[1]
             port_infos = part.split(",")
             for port_info in port_infos:
@@ -99,7 +101,7 @@ def get_speed_and_callback(port, service, ip, os, port_service):
     global SV_DB
     global OS_DB
 
-    data = IP_DB.get(ip, {}).get(port, NULL)    
+    data = IP_DB.get(ip, {}).get(port, None)    
     fingerprintID = -1
 
 
@@ -117,7 +119,7 @@ def get_speed_and_callback(port, service, ip, os, port_service):
 
 
     # Check if machine has previous data
-    if(data != NULL):
+    if(data != None):
         # Found previous ip:port
         speed = data['speed']
         if(data['times'] >= 0):
@@ -127,13 +129,13 @@ def get_speed_and_callback(port, service, ip, os, port_service):
 
     # Rely on single service fingerprint
     speed = SV_DB.get(service)
-    if(speed != NULL):
+    if(speed != None):
         # Found service fingerprint
         return (speed, normal_speed_callback, fingerprintID)
 
     # Rely on OS fingerprint
     speed = OS_DB.get(os_print)
-    if(speed != NULL):
+    if(speed != None):
         # Found OS fingerprint
         return (speed, normal_speed_callback, fingerprintID)
 
@@ -158,7 +160,7 @@ def smart_scan():
 
 def smart_scan_curried(todo):
     for ip, os_print in todo.items():
-        port_service = get_port_services()
+        port_service = get_port_services(ip)
         for port, service in port_service.items():
             speed, callback, ID = get_speed_and_callback(port, service, ip, os_print, port_service)
             perform_scan(ip, port, speed, callback, ID)
@@ -170,9 +172,9 @@ def perform_scan(ip, port, speed, callback, ID):
     successful = nmap_scan(ip, port, speed)
 
     # Seed data if missing
-    if(IP_DB.get(ip, NULL) == NULL):
+    if(IP_DB.get(ip, None) == None):
         IP_DB[ip] = {}
-    if(IP_DB[ip].get(port, NULL) == NULL):
+    if(IP_DB[ip].get(port, None) == None):
         IP_DB[ip][port] = {
             "times": 0,
             "speed": speed
