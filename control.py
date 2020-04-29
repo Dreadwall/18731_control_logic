@@ -175,8 +175,6 @@ def perform_scan(ip, port, speed, callback, ID):
 
 
 def nmap_scan(ip, port, speed):
-    # TODO: Need true/false if nmap successful
-
     ouput_file = CONFIG['DEFAULT']['OutputDir'] + "/output.xml"
 
     output = subprocess.check_output('nmap --vuln -p port -Tspeed ip -oX ' + ouput_file, shell=True)
