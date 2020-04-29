@@ -188,9 +188,13 @@ def perform_scan(ip, port, speed, callback, ID):
 def nmap_scan(ip, port, speed):
     ouput_file = CONFIG['DEFAULT']['OutputDir'] + "/output.xml"
 
-    output = subprocess.check_output('nmap --vuln -p port -Tspeed ip -oX ' + ouput_file, shell=True)
+    output = subprocess.check_output(f"nmap --script vuln -p {port} -T{speed} {ip} -oX {ouput_file}", shell=True)
+    output_str = output.decode("utf-8")
 
-    if("ERROR" in output or "closed" in output):
+    if output_str.find("ERROR"):
+        return False
+
+    if output_str.find("closed"):
         return False
 
     os.system('python nmap_parser.py ' + ouput_file)

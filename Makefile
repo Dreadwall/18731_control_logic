@@ -7,5 +7,9 @@ run:
 	mkdir output
 	sudo python3 control.py
 
+set:
+	rm controller.ini
+	cp controller.bak controller.ini
 
-.PHONY: clean run
+
+.PHONY: clean run set
