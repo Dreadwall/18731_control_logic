@@ -258,13 +258,17 @@ else:
 # setup terminate
 signal(SIGINT, sig_int_handler)
 
+PORT_NUMBER = 9090
+HOST_NAME = "localhost"
+
 try:
     MyHandler.set_demand_callback(on_demand_scan)
     server_class = http.server.HTTPServer
     httpd = server_class((HOST_NAME, PORT_NUMBER), MyHandler)
 
-    _thread.start_new_thread( httpd.serve_forever )
-except:
+    _thread.start_new_thread( httpd.serve_forever, () )
+except Exception as e:
+    print(str(e))
     print ("Error: unable to start thread")
 
 
