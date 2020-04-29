@@ -1,3 +1,4 @@
+import os
 import schedule
 import configparser
 import json
@@ -18,6 +19,7 @@ CONFIG.read('controller.ini')
 OS_DB = {}
 SV_DB = {}
 IP_DB = {}
+IP_CACHE = {}
 # ip->port->data[times tried, curr_speed]
 
 SYSTEM_FINGERPRINTS_DB = []
@@ -141,6 +143,8 @@ def get_speed_and_callback(port, service, ip, os, port_service):
 
 def smart_scan():
     global IP_CACHE
+
+    print("running smart scan...")
     
     if(IP_CACHE == {}):
         todo = get_IPs()
@@ -247,16 +251,16 @@ def sig_int_handler(signal_received, frame):
 
 if(CONFIG['Cache']['CacheIP']):
     # Setup Job schedule
-    interval = int(math.floor(1.0 /  float(CONFIG['Cache']['CacheFreq'])))
+    # interval = int(math.floor(1.0 /  float(CONFIG['Cache']['CacheFreq'])))
     if(CONFIG['Cache']['CacheUnit'] == 'hour'):
-        schedule.every(interval).hour.do(cache_IPs)
+        schedule.every(float(CONFIG['Cache']['CacheFreq'])).hours.do(cache_IPs)
     else:
-        schedule.every(interval).days.do(cache_IPs)
+        schedule.every(float(CONFIG['Cache']['CacheFreq'])).days.do(cache_IPs)
 
-if(CONFIG['Cache']['CacheUnit'] == 'hour'):
-    schedule.every(interval).hour.do(smart_scan)
+if(CONFIG['Scan']['ScanUnit'] == 'hour'):
+    schedule.every(float(CONFIG['Scan']['ScanFreq'])).hours.do(smart_scan)
 else:
-    schedule.every(interval).days.do(smart_scan)
+    schedule.every(float(CONFIG['Scan']['ScanFreq'])).days.do(smart_scan)
 
 # setup terminate
 signal(SIGINT, sig_int_handler)
