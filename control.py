@@ -193,7 +193,7 @@ def increase_speed_callback(ip, port, speed, result, fingerprintID):
     global SYSTEM_FINGERPRINTS_DB
 
     if(result == True):
-        if(data['times'] == CONFIG['Speedup']['Attempts']):
+        if(IP_DB[ip][port]['times'] == CONFIG['Speedup']['Attempts']):
             # We can speed up
             IP_DB[ip][port]['speed'] = min(speed, CONFIG['NMap']['MaxSpeed'])
             IP_DB[ip][port]['times'] = 0
