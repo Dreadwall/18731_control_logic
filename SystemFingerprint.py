@@ -67,7 +67,7 @@ class SystemFingerprint:
 			# which is what this classifier assumes for good results.
 			non_equality = non_equality + 3
 
-		if(non_equality <= tolerance):
+		if(non_equality <= int(tolerance)):
 			return True
 		else:
 			return False

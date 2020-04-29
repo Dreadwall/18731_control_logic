@@ -109,7 +109,7 @@ def get_speed_and_callback(port, service, ip, os, port_service):
     # Check if we have a system fingerprint
     sys_fingerprint = gen_fingerprint(port_service, ip, os, -1)
     for i in range(len(SYSTEM_FINGERPRINTS_DB)):
-        if sys_fingerprint.equal_in_tolerance(SYSTEM_FINGERPRINTS_DB, CONFIG['DEFAULT']['Tolerance']):
+        if sys_fingerprint.equal_in_tolerance(SYSTEM_FINGERPRINTS_DB[i], CONFIG['DEFAULT']['Tolerance']):
             fingerprintID = i
             break
 
