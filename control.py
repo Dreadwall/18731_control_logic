@@ -52,7 +52,7 @@ def get_IPs():
     ip_addresses = {}
     ouput_file = CONFIG['DEFAULT']['OutputDir'] + "/ip_addrs"
 
-    os.system("nmap -n -p1-10000 -O " + CONFIG['DEFAULT']['Subnet'] + " -oG - | cut -f1,4 >" + 
+    os.system("nmap -n -O " + CONFIG['DEFAULT']['Subnet'] + " -oG - | cut -f1,4 >" + 
         ouput_file)
     ip_lines = open(ouput_file, "r")
     ip_lines = ip_lines.readlines()
@@ -61,7 +61,7 @@ def get_IPs():
         if(not "Host:" in line):
             continue
         ip_slug = line.split(" ")[1]
-        os_slug = line.split("\t")[1]
+        os_slug = line.split(" ")[2]
         ip_addresses[ip_slug] = os_slug
     return ip_addresses
 
@@ -165,6 +165,8 @@ def smart_scan_curried(todo):
 
 
 def perform_scan(ip, port, speed, callback, ID):
+    print("Performing Scan")
+
     successful = nmap_scan(ip, port, speed)
 
     # Seed data if missing
@@ -280,11 +282,15 @@ except Exception as e:
     print(str(e))
     print ("Error: unable to start thread")
 
+smart_scan()
+print("Complete")
+
 
 while True:
     schedule.run_pending()
 
     # Sleep until next job
     time.sleep(schedule.idle_seconds())
+
 
 
