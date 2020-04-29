@@ -58,6 +58,8 @@ def get_IPs():
     ip_lines = ip_lines.readlines()
     os.remove(ouput_file)
     for line in ip_lines:
+        if(not "Host:" in line):
+            continue
         ip_slug = line.split(" ")[1]
         os_slug = line.split("\t")[1]
         ip_addresses[ip_slug] = os_slug
@@ -183,7 +185,7 @@ def nmap_scan(ip, port, speed):
 
     output = subprocess.check_output('nmap --vuln -p port -Tspeed ip -oX ' + ouput_file, shell=True)
 
-    if(output.contains("ERROR") or output.contains("closed")):
+    if("ERROR" in output or "closed" in output):
         return False
 
     os.system('python nmap_parser.py ' + ouput_file)
