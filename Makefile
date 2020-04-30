@@ -3,6 +3,10 @@ all: clean run
 clean:
 	-rm -rf output
 
+topo:
+	sudo mn -c
+	sudo python topo.py 3
+
 run:
 	mkdir output
 	sudo python3 control.py

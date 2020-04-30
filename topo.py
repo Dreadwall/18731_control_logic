@@ -36,7 +36,7 @@ if __name__ == "__main__":
         h.cmd("python server.py 8080 &") 
 
     c1 = net.get('c1')
-    c1.cmd("python3 control.py > output.txt")
+    c1.cmd("python3 control.py > hello.txt")
 
     CLI(net)
     net.stop()
