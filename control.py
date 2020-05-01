@@ -197,7 +197,7 @@ def nmap_scan(ip, port, speed):
     if output_str.find("closed"):
         return False
 
-    os.system('python nmap_parser.py ' + ouput_file)
+    os.system('python3 ./dir_scanparser/scanparser/__init__.py ./dir_scanparser/config.yml')
     return True
 
 
