@@ -47,6 +47,7 @@ with open(CONFIG['DEFAULT']['IPStore']) as json_file:
 
 ########## INFO GATHERING ##########
 
+print("HELLO WORLD", flush=True)
 
 def get_IPs():
     global CONFIG
@@ -83,7 +84,7 @@ def get_port_services(ip):
     
     for line in port_lines:
         if("Ports:" in line):
-            print(line)
+            print(line, flush=True)
 
             part = line.split("Ports: ")[1]
             port_infos = part.split(",")
@@ -149,7 +150,7 @@ def get_speed_and_callback(port, service, ip, os, port_service):
 def smart_scan():
     global IP_CACHE
 
-    print("running smart scan...")
+    print("running smart scan...", flush=True)
     
     if(IP_CACHE == {}):
         todo = get_IPs()
@@ -168,7 +169,7 @@ def smart_scan_curried(todo):
 
 
 def perform_scan(ip, port, speed, callback, ID):
-    print("Performing Scan")
+    print("Performing Scan", flush=True)
 
     successful = nmap_scan(ip, port, speed)
 
@@ -262,7 +263,7 @@ def terminate():
         json.dump(SV_DB, outfile)
 
 def sig_int_handler(signal_received, frame):
-    print('SIGINT or CTRL-C detected. Exiting gracefully')
+    print('SIGINT or CTRL-C detected. Exiting gracefully', flush=True)
     terminate()
     exit(0)
 
@@ -294,11 +295,11 @@ try:
 
     _thread.start_new_thread( httpd.serve_forever, () )
 except Exception as e:
-    print(str(e))
+    print(str(e), flush=True)
     print ("Error: unable to start thread")
 
 smart_scan()
-print("Complete")
+print("Complete", flush=True)
 
 
 while True:
