@@ -303,10 +303,14 @@ print("Complete", flush=True)
 
 
 while True:
-    schedule.run_pending()
-
     # Sleep until next job
-    time.sleep(schedule.idle_seconds())
+    sleep_time = schedule.idle_seconds()
+
+    if sleep_time <= 0:
+        schedule.run_pending()
+
+    else:
+        time.sleep(sleep_time)
 
 
 
