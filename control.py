@@ -71,7 +71,6 @@ def cache_IPs():
     global IP_CACHE
     IP_CACHE = get_IPs()
 
-
 def get_port_services(ip):
     port_service = {}
 
