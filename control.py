@@ -3,6 +3,7 @@ import configparser
 import json
 import math
 import time
+from datetime import datetime
 from signal import signal, SIGINT
 from sys import exit
 from os import system, remove
@@ -10,6 +11,7 @@ from IPy import IP
 import http.server
 from demand_server import MyHandler 
 import _thread
+import subprocess
 from SystemFingerprint import *
 
 CONFIG = configparser.ConfigParser()
@@ -50,7 +52,7 @@ def get_IPs():
     ip_addresses = {}
     ouput_file = CONFIG['DEFAULT']['OutputDir'] + "/ip_addrs"
 
-    system("nmap -n -p22,80 127.0.0.1/32 -A -oG - | grep -v 'Status' | awk '/Host/ {print}' | cut -f1,2,3 > " + 
+    system("nmap -n -p80 127.0.0.1/32 -A -oG - | grep -v 'Status' | awk '/Host/ {print}' | cut -f1,2,3 > " + 
 		ouput_file)
         
     ip_lines = open(ouput_file, "r")
@@ -80,7 +82,7 @@ def get_port_services():
     port_service = {}
 
     ouput_file = CONFIG['DEFAULT']['OutputDir'] + "/ports"
-    system("nmap -n -p22,80 -O 127.0.0.1/32  -sV -oG - | grep -v 'Status' | awk '/Host/ {print}' | cut -f2  >" + 
+    system("nmap -n -p80 -O 127.0.0.1/32 -sV -oG - | grep -v 'Status' | awk '/Host/ {print}' | cut -f2  >" + 
 	ouput_file)
     port_lines = open(ouput_file, "r")
     port_lines = port_lines.readlines()
@@ -201,17 +203,33 @@ def perform_scan(ip, port, speed, callback, ID):
     callback(ip, port, speed, successful, ID)
 
 
-def nmap_scan(ip, port, speed):
+#def nmap_scan(ip, port, speed):
     # TODO: Need true/false if nmap successful
 
-    ouput_file = CONFIG['DEFAULT']['OutputDir'] + "/output.xml"
+    #ouput_file = CONFIG['DEFAULT']['OutputDir'] + "/output.xml"
     
-    nmap_command = 'nmap --script vuln -p ' + str(port) + \
-		' -T ' + str(speed) + \
-		' ' + str(ip) + \
-		' -oX ./dir_scanparser/scanparser/scan_results/script_vuln.nmap'
-    system(nmap_command)
-    system('python3.6 ./dir_scanparser/scanparser/__init__.py ./dir_scanparser/config.yml')
+    
+    #nmap_command = 'nmap --script vuln -p ' + str(port) + \
+	#	' -T ' + str(speed) + \
+	#	' ' + str(ip) + \
+	#	' -oX ./dir_scanparser/scanparser/scan_results/' + datetime.now().strftime('%Y-%m-%d_%H:%M:%S') + '_script_vuln.nmap'
+    #system(nmap_command)
+    #system('python3.6 ./dir_scanparser/scanparser/__init__.py ./dir_scanparser/config.yml')
+    #return True
+
+def nmap_scan(ip, port, speed):
+    ouput_file = CONFIG['DEFAULT']['OutputDir'] + "/output.xml"
+
+    output = subprocess.check_output(f"nmap --script vuln -p {port} -T{speed} {ip} -oX {datetime.now().strftime('%Y-%m-%d_%H:%M:%S')}_script_vuln.nmap", shell=True)
+    output_str = output.decode("utf-8")
+
+    if output_str.find("ERROR"):
+        return False
+
+    if output_str.find("closed"):
+        return False
+
+    #os.system('python3 ./dir_scanparser/scanparser/__init__.py ./dir_scanparser/config.yml')
     return True
 
 
@@ -281,13 +299,13 @@ if(CONFIG['Cache']['CacheIP']):
         schedule.every(interval).hour.do(cache_IPs)
     else:
         #schedule.every(interval).days.do(cache_IPs)
-        schedule.every(1).minutes.do(cache_IPs)
+        schedule.every(5).seconds.do(cache_IPs)
 
 if(CONFIG['Cache']['CacheUnit'] == 'hour'):
     schedule.every(interval).hour.do(smart_scan)
 else:
     #schedule.every(interval).days.do(smart_scan)
-    schedule.every(1).minutes.do(smart_scan)
+    schedule.every(5).seconds.do(smart_scan)
 
 # setup terminate
 signal(SIGINT, sig_int_handler)

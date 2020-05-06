@@ -1,44 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE nmaprun>
 <?xml-stylesheet href="file:///usr/bin/../share/nmap/nmap.xsl" type="text/xsl"?>
-<!-- Nmap 7.60 scan initiated Sun Apr 26 00:55:58 2020 as: nmap -&#45;script vuln -p 80 -T 3 -oX ./dir_scanparser/scanparser/scan_results/script_vuln.nmap 127.0.0.1 -->
-<nmaprun scanner="nmap" args="nmap -&#45;script vuln -p 80 -T 3 -oX ./dir_scanparser/scanparser/scan_results/script_vuln.nmap 127.0.0.1" start="1587876958" startstr="Sun Apr 26 00:55:58 2020" version="7.60" xmloutputversion="1.04">
+<!-- Nmap 7.60 scan initiated Tue May  5 21:39:42 2020 as: nmap -&#45;script vuln -p 80 -T 5 -oX ./dir_scanparser/scanparser/scan_results/script_vuln.nmap 10.0.0.3 -->
+<nmaprun scanner="nmap" args="nmap -&#45;script vuln -p 80 -T 5 -oX ./dir_scanparser/scanparser/scan_results/script_vuln.nmap 10.0.0.3" start="1588729182" startstr="Tue May  5 21:39:42 2020" version="7.60" xmloutputversion="1.04">
 <scaninfo type="syn" protocol="tcp" numservices="1" services="80"/>
-<verbose level="0"/>
-<debugging level="0"/>
-<host starttime="1587876968" endtime="1587877479"><status state="up" reason="localhost-response" reason_ttl="0"/>
-<address addr="127.0.0.1" addrtype="ipv4"/>
-<hostnames>
-<hostname name="localhost" type="PTR"/>
-</hostnames>
-<ports><port protocol="tcp" portid="80"><state state="open" reason="syn-ack" reason_ttl="64"/><service name="http" method="table" conf="3"/><script id="http-csrf" output="Couldn&apos;t find any CSRF vulnerabilities."/><script id="http-dombased-xss" output="Couldn&apos;t find any DOM based XSS."/><script id="http-slowloris-check" output="&#xa;  VULNERABLE:&#xa;  Slowloris DOS attack&#xa;    State: LIKELY VULNERABLE&#xa;    IDs:  CVE:CVE-2007-6750&#xa;      Slowloris tries to keep many connections to the target web server open and hold&#xa;      them open as long as possible.  It accomplishes this by opening connections to&#xa;      the target web server and sending a partial request. By doing so, it starves&#xa;      the http server&apos;s resources causing Denial Of Service.&#xa;      &#xa;    Disclosure date: 2009-09-17&#xa;    References:&#xa;      https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2007-6750&#xa;      http://ha.ckers.org/slowloris/&#xa;"><table key="CVE-2007-6750">
-<elem key="title">Slowloris DOS attack</elem>
-<elem key="state">LIKELY VULNERABLE</elem>
-<table key="ids">
-<elem>CVE:CVE-2007-6750</elem>
-</table>
-<table key="description">
-<elem>Slowloris tries to keep many connections to the target web server open and hold&#xa;them open as long as possible.  It accomplishes this by opening connections to&#xa;the target web server and sending a partial request. By doing so, it starves&#xa;the http server&apos;s resources causing Denial Of Service.&#xa;</elem>
-</table>
-<table key="dates">
-<table key="disclosure">
-<elem key="day">17</elem>
-<elem key="year">2009</elem>
-<elem key="month">09</elem>
-</table>
-</table>
-<elem key="disclosure">2009-09-17</elem>
-<table key="exploit_results">
-</table>
-<table key="refs">
-<elem>https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2007-6750</elem>
-<elem>http://ha.ckers.org/slowloris/</elem>
-</table>
-</table>
-</script><script id="http-stored-xss" output="Couldn&apos;t find any stored XSS vulnerabilities."/></port>
-</ports>
-<times srtt="56" rttvar="5000" to="100000"/>
-</host>
-<runstats><finished time="1587877479" timestr="Sun Apr 26 01:04:39 2020" elapsed="521.81" summary="Nmap done at Sun Apr 26 01:04:39 2020; 1 IP address (1 host up) scanned in 521.81 seconds" exit="success"/><hosts up="1" down="0" total="1"/>
-</runstats>
-</nmaprun>
