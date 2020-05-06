@@ -13,6 +13,7 @@ from demand_server import MyHandler
 import _thread
 import subprocess
 from SystemFingerprint import *
+from datetime import datetime
 
 CONFIG = configparser.ConfigParser()
 CONFIG.read('controller.ini')
@@ -124,7 +125,7 @@ def get_speed_and_callback(port, service, ip, os, port_service):
         # Found previous ip:port
         speed = data['speed']
         if(data['times'] >= 0):
-            return (speed + 1, increase_speed_callback, fingerprintID)
+            return (min(speed + 1, 5), increase_speed_callback, fingerprintID)
         else:
             return (speed, normal_speed_callback, fingerprintID)
 
@@ -178,26 +179,27 @@ def perform_scan(ip, port, speed, callback, ID):
     if(IP_DB[ip].get(port, None) == None):
         IP_DB[ip][port] = {
             "times": 0,
-            "speed": speed
+            "speed": int(speed)
         }
-
+    with open(CONFIG['DEFAULT']['IPStore'], 'w') as outfile:
+        json.dump(IP_DB, outfile)
+    print(IP_DB)
     # Perform metric changes
     callback(ip, port, speed, successful, ID)
-
+    
 
 def nmap_scan(ip, port, speed):
+    #ouput_file = CONFIG['DEFAULT']['OutputDir'] + "/" + datetime.now().strftime("%Y-%m-%d_%H:%M:%S_") + str(port).strip() + "_output.xml"
     ouput_file = CONFIG['DEFAULT']['OutputDir'] + "/output.xml"
+    print("Port number: " + str(port).strip())
 
-    output = subprocess.check_output(f"nmap --script vuln -p {port} -T{speed} {ip} -oX {ouput_file}", shell=True)
+    output = subprocess.check_output(f"nmap --script vuln -p {str(port).strip()} -T{speed} {ip} -oX {ouput_file}", shell=True)
     output_str = output.decode("utf-8")
 
-    if output_str.find("ERROR"):
+    if ("close" in output_str):
         return False
 
-    if output_str.find("closed"):
-        return False
-
-    os.system('python3 ./dir_scanparser/scanparser/__init__.py ./dir_scanparser/config.yml')
+    os.system('python3.6 ./dir_scanparser/scanparser/__init__.py ./dir_scanparser/config.yml')
     return True
 
 
@@ -208,10 +210,16 @@ def increase_speed_callback(ip, port, speed, result, fingerprintID):
     global SYSTEM_FINGERPRINTS_DB
 
     speed = int(speed)
+    if(speed >= 5):
+        speed = 5
+    
     min_speed = min(speed, int(CONFIG['NMap']['MaxSpeed']))
+    print(f"increase_speed_callback New Speed: {min_speed}")
+    
 
     if(result == True):
-        if(IP_DB[ip][port]['times'] == CONFIG['Speedup']['Attempts']):
+        if(IP_DB[ip][port]['times'] == int(CONFIG['Speedup']['Attempts'])):
+            print("Scanned {CONFIG['Speedup']['Attempts']} times. Resetting successful scans and increasing scan speed...")
             # We can speed up
             IP_DB[ip][port]['speed'] = min_speed
             IP_DB[ip][port]['times'] = 0
@@ -228,7 +236,11 @@ def normal_speed_callback(ip, port, speed, result, fingerprintID):
     global SYSTEM_FINGERPRINTS_DB
 
     speed = int(speed)
+    if(speed >= 5):
+        speed = 5
+
     max_speed = max(speed - 1, int(CONFIG['NMap']['MinSpeed']))
+    print(f"normal_speed_callback New Speed: {max_speed}")
 
     if(result == False):
         # Scan failed, we need to slow down
@@ -236,7 +248,7 @@ def normal_speed_callback(ip, port, speed, result, fingerprintID):
         IP_DB[ip][port]['speed'] = max_speed
         SYSTEM_FINGERPRINTS_DB[fingerprintID].set_speed(port, max_speed)
     else:
-        SYSTEM_FINGERPRINTS_DB[fingerprintID].set_speed(port, speed) 
+        SYSTEM_FINGERPRINTS_DB[fingerprintID].set_speed(port, speed)
 
 
 ########## DEMAND CALLBACK ##########
@@ -259,7 +271,7 @@ def terminate():
         json.dump(SV_DB, outfile)
 
     with open(CONFIG['DEFAULT']['IPStore'], 'w') as outfile:
-        json.dump(SV_DB, outfile)
+        json.dump(IP_DB, outfile)
 
 def sig_int_handler(signal_received, frame):
     print('SIGINT or CTRL-C detected. Exiting gracefully', flush=True)
@@ -274,12 +286,14 @@ if(CONFIG['Cache']['CacheIP']):
     if(CONFIG['Cache']['CacheUnit'] == 'hour'):
         schedule.every(float(CONFIG['Cache']['CacheFreq'])).hours.do(cache_IPs)
     else:
-        schedule.every(float(CONFIG['Cache']['CacheFreq'])).days.do(cache_IPs)
+        #schedule.every(float(CONFIG['Cache']['CacheFreq'])).days.do(cache_IPs)
+        schedule.every(5).seconds.do(cache_IPs)
 
 if(CONFIG['Scan']['ScanUnit'] == 'hour'):
     schedule.every(float(CONFIG['Scan']['ScanFreq'])).hours.do(smart_scan)
 else:
-    schedule.every(float(CONFIG['Scan']['ScanFreq'])).days.do(smart_scan)
+    #schedule.every(float(CONFIG['Scan']['ScanFreq'])).days.do(smart_scan)
+    schedule.every(5).seconds.do(smart_scan)
 
 # setup terminate
 signal(SIGINT, sig_int_handler)
