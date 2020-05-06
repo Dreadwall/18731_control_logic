@@ -286,14 +286,14 @@ if(CONFIG['Cache']['CacheIP']):
     if(CONFIG['Cache']['CacheUnit'] == 'hour'):
         schedule.every(float(CONFIG['Cache']['CacheFreq'])).hours.do(cache_IPs)
     else:
-        #schedule.every(float(CONFIG['Cache']['CacheFreq'])).days.do(cache_IPs)
-        schedule.every(5).seconds.do(cache_IPs)
+        schedule.every(float(CONFIG['Cache']['CacheFreq'])).days.do(cache_IPs)
+        #schedule.every(5).seconds.do(cache_IPs)
 
 if(CONFIG['Scan']['ScanUnit'] == 'hour'):
     schedule.every(float(CONFIG['Scan']['ScanFreq'])).hours.do(smart_scan)
 else:
-    #schedule.every(float(CONFIG['Scan']['ScanFreq'])).days.do(smart_scan)
-    schedule.every(5).seconds.do(smart_scan)
+    schedule.every(float(CONFIG['Scan']['ScanFreq'])).days.do(smart_scan)
+    #schedule.every(5).seconds.do(smart_scan)
 
 # setup terminate
 signal(SIGINT, sig_int_handler)
