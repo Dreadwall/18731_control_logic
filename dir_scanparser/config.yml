@@ -1,14 +1,19 @@
 general:
+    #Root directory of the project
     proj_dir: /home/magicannon/18731_control_logic
 
+# Source plugins
+#   name: Name of the Python script that implements the source plugin
+#   inputfile: The scan result file consumed by this plugin
 sources:
   - name: nmap_script_vuln
     inputfile: dir_scanparser/scanparser/scan_results/script_vuln.nmap
 
-
-#  - name: test_source
-#    inputfile: test_source_input.txt
-
+# Ruleset plugins
+#   name: Name of the Python script that implements the ruleset generator plugin
+#   outputfile: Name of the ruleset file created by this plugin
+#   rootdirectory: Dictates the directory where the output file is written to
+#                  This field may or may not be used depending on the plugin
 rulesets:
   - name: iptables
     outputfile: dir_scanparser/scanparser/ruleset_results/iptables.out
