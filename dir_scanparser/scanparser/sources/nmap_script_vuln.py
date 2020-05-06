@@ -18,40 +18,43 @@ class Plugin(Source):
 
         logger.debug("Parsing Nmap script-vuln output.")
         with open(self.filename) as fp:
-            scan = xmltodict.parse(fp.read())['nmaprun']
-            ipaddr = scan['host']['address']['@addr']
-            ports = scan['host']['ports']['port']
-            if isinstance(ports, collections.Mapping):
-                portnum = ports['@portid']
-                service = ports['service']['@name']
-                scripts = ports['script']
-                if isinstance(scripts, collections.Mapping):
-                    target = self.handle_script(scripts, ipaddr, portnum, service)
-                    if target is not None:
-                        targets.append(target)
- 
-                if type(scripts) == list:
-                    for script in scripts:
-                        target = self.handle_script(script, ipaddr, portnum, service)
-                        if target is not None:
-                            targets.append(target)
-
-            if type(ports) == list:
-                for port in ports:
-                    portnum = port['@portid']
-                    service = port['service']['@name']
-                    scripts = port['script']
+            try:
+                scan = xmltodict.parse(fp.read())['nmaprun']
+                ipaddr = scan['host']['address']['@addr']
+                ports = scan['host']['ports']['port']
+                if isinstance(ports, collections.Mapping):
+                    portnum = ports['@portid']
+                    service = ports['service']['@name']
+                    scripts = ports['script']
                     if isinstance(scripts, collections.Mapping):
                         target = self.handle_script(scripts, ipaddr, portnum, service)
                         if target is not None:
                             targets.append(target)
-    
+     
                     if type(scripts) == list:
                         for script in scripts:
                             target = self.handle_script(script, ipaddr, portnum, service)
                             if target is not None:
                                 targets.append(target)
     
+                if type(ports) == list:
+                    for port in ports:
+                        portnum = port['@portid']
+                        service = port['service']['@name']
+                        scripts = port['script']
+                        if isinstance(scripts, collections.Mapping):
+                            target = self.handle_script(scripts, ipaddr, portnum, service)
+                            if target is not None:
+                                targets.append(target)
+        
+                        if type(scripts) == list:
+                            for script in scripts:
+                                target = self.handle_script(script, ipaddr, portnum, service)
+                                if target is not None:
+                                    targets.append(target)
+            except:
+                return []
+
         return targets
 
     def handle_script(self, script, ipaddr, portnum, service):
